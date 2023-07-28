@@ -1,0 +1,70 @@
+apiVersion: adaptdl.petuum.com/v1
+kind: AdaptDLJob
+metadata:
+  generateName: bert-
+spec:
+        # placement: ["phortx1","phortx1","phortx1","phortx1", "phortx1","phortx1","phortx1","phortx1"]
+  template:
+    spec:
+      terminationGracePeriodSeconds: 60
+      hostIPC: true
+      #tolerations:
+      #- key: "experiment-reserved"
+      #  operator: "Equal"
+      #  value: "suhasj"
+      #  effect: "NoSchedule"
+        # hostNetwork: true
+      containers:
+      - name: main
+        securityContext:
+          capabilities:
+            add: ["IPC_LOCK"]
+        command:
+        - python3
+        - run_squad.py
+        - --model_type=bert
+        - --model_name_or_path=bert-base-uncased
+        - --do_train
+        - --do_lower_case
+        - --train_file=/pollux/squad/train-v1.1.json
+        - --predict_file=/pollux/squad/dev-v1.1.json
+        - --per_gpu_train_batch_size=12
+        - --learning_rate=3e-5
+        - --num_train_epochs=2.0
+        - --max_seq_length=384
+        - --doc_stride=128
+        - --cache_dir=/pollux/squad
+        - --data_dir=/pollux/squad
+        - --output_dir=/tmp/output
+        - --overwrite_output_dir
+        - --threads=8
+        env:
+        - name: NCCL_DEBUG
+          value: "INFO"
+        - name: PYTHONUNBUFFERED
+          value: "true"
+        - name: NCCL_DEBUG_SUBSYS
+          value: "INIT,NET,GRAPH,TUNING,ENV,P2P"
+        - name: NCCL_P2P_LEVEL
+          value: "NVL"
+        resources:
+          limits:
+            nvidia.com/gpu: 1
+            rdma/hca: 0
+            cpu: 9
+            memory: "40G"
+          requests:
+            nvidia.com/gpu: 1
+            rdma/hca: 0
+            cpu: 9
+            memory: "40G"
+        volumeMounts:
+        - name: data
+          mountPath: /mnt
+      volumes:
+      - name: data
+        hostPath:
+          path: /mnt
+          type: Directory
+      imagePullSecrets:
+      - name: regcred

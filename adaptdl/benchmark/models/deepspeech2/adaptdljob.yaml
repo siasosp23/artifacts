@@ -1,0 +1,57 @@
+apiVersion: adaptdl.petuum.com/v1
+kind: AdaptDLJob
+metadata:
+  generateName: deepspeech2-
+spec:
+  # placement: ["phortx1", "phortx1", "phortx1", "phortx1", "phortx1", "phortx1", "phortx1", "phortx1"]
+  template:
+    spec:
+            #      hostNetwork: true
+      hostIPC: true
+      # tolerations:
+      # - key: "experiment-reserved"
+      #   operator: "Equal"
+      #  value: "suhasj"
+      #   effect: "NoSchedule"
+      containers:
+      - name: main
+        securityContext:
+          capabilities:
+            add: ["IPC_LOCK"]
+        command:
+        - python
+        - /root/deepspeech2/train.py
+        - --cuda
+        - --train-manifest=/pollux/deepspeech2_voxforge_cmu_us_train_manifest_part1.csv
+        - --val-manifest=/pollux/deepspeech2_voxforge_cmu_us_train_manifest_part2.csv
+        - --max-norm=1
+        - --batch-size=20
+        - --lr=0.12
+        - --learning-anneal=1.02
+        - --momentum=0.95
+        - --epochs=80
+        env:
+        - name: PYTHONUNBUFFERED
+          value: "true"
+        resources:
+          limits:
+            nvidia.com/gpu: 1
+            rdma/hca: 0
+            cpu: 9
+            memory: "40G"
+          requests:
+            nvidia.com/gpu: 1
+            rdma/hca: 0
+            cpu: 9
+            memory: "40G"
+        volumeMounts:
+        - name: data
+          mountPath: /mnt
+          readOnly: true
+      volumes:
+      - name: data
+        hostPath:
+          path: /mnt
+          type: Directory
+      imagePullSecrets:
+      - name: regcred

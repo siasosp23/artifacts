@@ -1,0 +1,52 @@
+apiVersion: adaptdl.petuum.com/v1
+kind: AdaptDLJob
+metadata:
+  generateName: cifar10-
+spec:
+        # placement: ["phortx2", "phortx2", "phortx2", "phortx2", "phortx2", "phortx2", "phortx2", "phortx2"]
+  template:
+    spec:
+            # hostNetwork: true
+            #tolerations:
+            #- key: "experiment-reserved"
+            #operator: "Equal"
+            #value: "suhasj"
+            #effect: "NoSchedule"
+      hostIPC: true
+      containers:
+      - name: main
+        securityContext:
+          capabilities:
+            add: ["IPC_LOCK"]
+        command:
+        - python3
+        - /root/cifar10/main.py
+        - --model=ResNet18
+        env:
+        - name: PYTHONUNBUFFERED
+          value: "true"
+        - name: NCCL_DEBUG
+          value: "INFO"
+
+        resources:
+          limits:
+            nvidia.com/gpu: 1
+            rdma/hca: 0
+            cpu: 9
+            memory: "40G"
+          requests:
+            nvidia.com/gpu: 1
+            rdma/hca: 0
+            cpu: 9
+            memory: "40G"
+        volumeMounts:
+        - name: data
+          mountPath: /mnt
+          readOnly: true
+      volumes:
+      - name: data
+        hostPath:
+          path: /mnt
+          type: Directory
+      imagePullSecrets:
+      - name: regcred

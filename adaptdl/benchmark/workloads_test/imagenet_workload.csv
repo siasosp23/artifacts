@@ -1,0 +1,2 @@
+name,time,application,num_replicas,batch_size
+imagenet-dgx,3,imagenet,1,800

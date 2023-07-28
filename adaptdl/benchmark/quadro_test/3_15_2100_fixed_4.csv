@@ -1,0 +1,16 @@
+,Unnamed: 0,name,time,application,num_replicas,batch_size
+0,0,ncf-0,13.0,ncf,1,32768
+1,1,cifar10-1,24.0,cifar10,8,4096
+2,2,cifar10-2,622.0,cifar10,4,4096
+3,3,ncf-3,622.0,ncf,1,32768
+4,4,ncf-4,675.0,ncf,1,32768
+5,5,ncf-5,822.0,ncf,1,32768
+6,6,deepspeech2-6,834.0,deepspeech2,4,640
+7,7,cifar10-7,1423.0,cifar10,8,4096
+8,8,yolov3-8,1444.0,yolov3,4,64
+9,9,deepspeech2-9,1486.0,deepspeech2,8,640
+10,10,cifar10-10,3222.0,cifar10,4,2048
+11,11,bert-11,3667.0,bert,8,384
+12,12,cifar10-12,4422.0,cifar10,4,2048
+13,13,deepspeech2-13,5229.0,deepspeech2,8,320
+14,14,bert-14,5477.0,bert,8,384

@@ -1,0 +1,13 @@
+adaptdl
+future>=0.17.1
+kubernetes_asyncio==9.1.0  # 10.0.0 is buggy
+prometheus_client>=0.7.1
+pandas
+numpy>=1.17
+pymoo~=0.4.0
+python-dateutil>=2.7.3
+requests~=2.7.0
+aiohttp~=3.6.2
+cvxopt~=1.2.7
+jsonpatch~=1.26
+cvxpy~=1.1.17

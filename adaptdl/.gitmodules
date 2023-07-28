@@ -1,0 +1,6 @@
+[submodule "benchmark/models/imagenet/apex"]
+	path = benchmark/models/imagenet/apex
+	url = https://github.com/NVIDIA/apex.git
+[submodule "benchmark/models/imagenet/deps/apex"]
+	path = benchmark/models/imagenet/deps/apex
+	url = https://github.com/NVIDIA/apex.git

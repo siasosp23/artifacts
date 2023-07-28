@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pollux
+  annotations: 
+        volume.beta.kubernetes.io/storage-class: "hot"
+ 
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 400Gi
+  volumeMode: Filesystem

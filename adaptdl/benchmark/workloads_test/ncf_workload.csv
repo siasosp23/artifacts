@@ -1,0 +1,2 @@
+name,time,application,num_replicas,batch_size
+ncf-1,0,ncf,1,32768

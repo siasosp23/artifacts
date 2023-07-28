@@ -1,0 +1,16 @@
+name,time,application,num_replicas,batch_size
+ncf-0,638.0,ncf,1,32768
+cifar10-1,1839.0,cifar10,16,4096
+cifar10-2,2437.0,cifar10,12,4096
+ncf-3,4237.0,ncf,1,32768
+ncf-4,4290.0,ncf,1,32768
+ncf-5,4837.0,ncf,1,32768
+deepspeech2-6,4849.0,deepspeech2,12,640
+cifar10-7,5438.0,cifar10,12,4096
+yolov3-8,5459.0,yolov3,4,64
+deepspeech2-9,5501.0,deepspeech2,12,640
+cifar10-10,7237.0,cifar10,6,2048
+bert-11,7682.0,bert,12,384
+cifar10-12,8437.0,cifar10,6,2048
+deepspeech2-13,9244.0,deepspeech2,8,320
+bert-14,9492.0,bert,8,384
