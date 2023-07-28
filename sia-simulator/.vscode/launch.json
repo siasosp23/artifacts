@@ -1,0 +1,32 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Current File",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "v2-ftf-mip",
+            "type": "python",
+            "request": "launch",
+            "program": "ftf_simulator.py",
+            "args" : ["../no_ncf_workloads", "--logdir=/tmp/output_no_ncf", "--policy=weighted_mip", "--policy_p_val=0.5", "--mip_lambda_n=-0.02", "--mip_lambda_a=0.1", "--interval=60", "--output=/tmp/output_no_ncf"],
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "real-haware-mip",
+            "type": "python",
+            "request": "launch",
+            "program": "multi_simulator.py",
+            "args" : ["../workloads/workload-1.csv", "--policy=weighted_mip", "--policy_p_val=0.5", "--mip_lambda_n=-0.5", "--mip_lambda_a=0.1", "--project_throughputs"],
+            "console": "integratedTerminal"
+        }
+    ]
+}
