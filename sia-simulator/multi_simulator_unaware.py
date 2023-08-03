@@ -18,44 +18,34 @@ from cluster_unaware import ClusterUnaware
 from sia_unaware import SiaUnaware
 from pollux_unaware import PolluxPolicyUnaware
 from pollux_unaware_fix import PolluxPolicyUnawareFix
+import simulator_config as sim_config
+
 #from shockwave import ShockWavePolicy
 ShockWavePolicy = dict
 
 
 def multi_simulate(args):
     workload = pandas.read_csv(args.workload)
-
-    # default for experiments
-    cluster_ngpus_per_node = {"aws": 4, "dgx-ext": 8, "rtx": 8}
-    cluster_nnodes = {"aws": 6, "dgx-ext": 2, "rtx": 3}
-    # rtx + quadro combo on phoebe
-    # cluster_ngpus_per_node = {"rtx" : 8, "quad" : 4}
-    # cluster_nnodes = {"quad" : 1, "rtx" : 1}
-    # full phoebe combo
-    # cluster_ngpus_per_node = {"dgx-ext": 8, "rtx": 8, "quad": 4}
-    # cluster_nnodes = {"dgx-ext": 2, "quad": 1, "rtx": 3}
-    # original pollux eval cluster on aws
-    # cluster_ngpus_per_node = {"aws": 4}
-    # cluster_nnodes = {"aws": 16}
     if args.cluster_scale is not None:
-        for k in cluster_nnodes.keys():
-            cluster_nnodes[k] = cluster_nnodes[k] * args.cluster_scale
-        print(f"Scaled up cluster_nnodes: {cluster_nnodes}")
-    cluster_max_physical_nnodes = {"aws": 16,
-                                   "rtx": 3, "dgx-ext": 2, "dgx": 2, "quad": 1}
+        for k in sim_config.cluster_nnodes.keys():
+            sim_config.cluster_nnodes[k] = sim_config.cluster_nnodes[k] * args.cluster_scale
+    cluster_populate_nnodes = sim_config.cluster_nnodes
+
+    # filter out GPU types not in simulated cluster
+    sim_ngpus_per_node = {k: sim_config.cluster_ngpus_per_node[k] for k in sim_config.cluster_nnodes.keys()}
     max_num_replicas = 1000000
-    for cluster in cluster_nnodes.keys():
-        n_sim = cluster_ngpus_per_node[cluster] * cluster_nnodes[cluster]
-        n_real = cluster_ngpus_per_node[cluster] * \
-            cluster_max_physical_nnodes[cluster]
+    for cluster in sim_config.cluster_nnodes.keys():
+        n_sim = sim_config.cluster_ngpus_per_node[cluster] * sim_config.cluster_nnodes[cluster]
+        n_real = sim_config.cluster_ngpus_per_node[cluster] * \
+            sim_config.cluster_max_physical_nnodes[cluster]
         max_num_replicas = min(n_sim, n_real, max_num_replicas)
 
     # vnode config
-    ngpus_per_vnode = min(cluster_ngpus_per_node.values())
-    max_num_vnodes = sum([cluster_nnodes[k] * cluster_ngpus_per_node[k]
-                         for k in cluster_nnodes.keys()]) / ngpus_per_vnode
+    ngpus_per_vnode = min(sim_config.cluster_ngpus_per_node.values())
+    max_num_vnodes = sum([sim_config.cluster_nnodes[k] * sim_config.cluster_ngpus_per_node[k]
+                         for k in sim_config.cluster_nnodes.keys()]) / ngpus_per_vnode
     print(f"# gpus/vnode: {ngpus_per_vnode}, # vnodes: {max_num_vnodes}, max-replicas : {max_num_replicas}, ")
-    cluster_populate_nnodes = cluster_nnodes
+    cluster_populate_nnodes = sim_config.cluster_nnodes
 
     if args.policy == "sia":
         policy = SiaUnaware(p_fairness=args.policy_p_val,
@@ -81,14 +71,14 @@ def multi_simulate(args):
 
         policy.populate_valid_configs({'virtual': int(max_num_vnodes)}, {
                                       'virtual': ngpus_per_vnode})
-        policy.set_real_cname(cluster_populate_nnodes, cluster_ngpus_per_node)
+        policy.set_real_cname(cluster_populate_nnodes, sim_config.cluster_ngpus_per_node)
 
     elif args.policy == "pollux_fix":
         policy = PolluxPolicyUnawareFix(args.policy_p_val)
     else:
         policy = PolluxPolicyUnaware(args.policy_p_val)
     cluster = ClusterUnaware(
-        workload, policy, cluster_nnodes, cluster_ngpus_per_node, max_num_replicas=max_num_replicas, max_physical_nodes=cluster_max_physical_nnodes)
+        workload, policy, sim_config.cluster_nnodes, sim_config.cluster_ngpus_per_node, max_num_replicas=max_num_replicas, max_physical_nodes=sim_config.cluster_max_physical_nnodes)
 
     current_time = 0
     while not cluster.all_complete():

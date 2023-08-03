@@ -6,13 +6,15 @@ Supports simulating heterogeneous clusters (even larger-than-physical clusters) 
 - Support for Gavel and Shockwave schedulers (Shockwave is currently disabled as it requires a license for Gurobi solver)
 
 
-## Pre-requisites:
-- Python 3.10+
-- `pip install -r requirements.txt`
-- `pip install cvxpy[CBC, GLPK]`
+## Before you run simulator, do the following:
+- Create new conda env with python 3.10: `conda create -n opt python=3.10`
+- Install numpy+mkl from anaconda channel: `conda install numpy=1.23 -c anaconda`
+- Install pandas+scipy from anaconda channel: `conda install pandas scipy -c anaconda`
+- Install pymoo (to run Pollux policy): `pip install -U pymoo==0.4.2.1`
+- Install cvxpy with CBC,GLPK solver support (to run Sia and Gavel policy): `pip install cvxpy[CBC, GLPK]`
 
 ## Running simulator on traces
-See `./run_experiment.sh` for examples on how to run the simulator for Sia/Gavel on Saturn traces.
+See `./run_experiment.sh` for examples on how to run the simulator for Sia/Gavel/Pollux on Saturn traces.
 
 ## Summarizing results
 Use `python utils/print_run_stats.py --workload_dir=${WORKLOAD_DIR} --output_dir=${OUTPUT_DIR} --interval=${INTERVAL}` to print summary of results for a run of simulator. This script outputs all relevant scheduler metrics from the run onto STDOUT in a human readble form (see below for a sample output).
