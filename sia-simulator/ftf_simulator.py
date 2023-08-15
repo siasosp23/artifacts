@@ -339,7 +339,7 @@ class FTFCluster(object):
         job_info.remain_steps = max(1, job_info.total_steps - job_info.cur_step)
         job_info.rescale_time = job_app.rescale_time
         job_info.submission_time = job.submission_time
-        job_info.slowdown_factor = job.random_slowdown_factor
+        job_info.slowdown_factor = job.calibration_factor
         assert job_app.rescale_time > 0
         return job_info
 

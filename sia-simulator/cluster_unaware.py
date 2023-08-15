@@ -627,7 +627,7 @@ class ClusterUnaware(object):
                 job.target_batch_size, job.completion_epoch)
             job_info.total_steps = job_app.get_iteration(
                 job.target_batch_size, job.completion_epoch)
-        job_info.slowdown_factor = job.random_slowdown_factor
+        job_info.slowdown_factor = job.calibration_factor
         assert job_info.cur_step >= 0 and job_info.cur_step <= job_info.total_steps
         return job_info
 
